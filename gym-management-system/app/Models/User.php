@@ -55,6 +55,6 @@ class User extends Authenticatable
      */
     public function gyms()
     {
-        return $this->hasMany(Gym::class, 'admin_id');
+        return $this->hasMany(Gym::class, 'gym_admin_id');
     }
 }

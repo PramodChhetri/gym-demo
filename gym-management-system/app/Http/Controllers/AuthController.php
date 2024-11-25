@@ -32,7 +32,7 @@ class AuthController extends Controller
     }
 
     // Login User
-    public function login(Request $request)
+    /*     public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -52,7 +52,37 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => 'Invalid credentials']);
+    } */
+
+    public function login(Request $request)
+{
+    // Validate the input fields
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Attempt to authenticate using the provided credentials
+    if (!Auth::attempt($credentials)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
+
+    // Get the authenticated user
+    $user = $request->user();
+
+    // Generate a token for the user
+    $token = $user->createToken('API Token')->plainTextToken;
+
+    // Retrieve the user's roles using Spatie's roles and permissions
+    $roles = $user->getRoleNames(); // Returns a collection of role names
+
+    // Append roles to the response
+    return response()->json([
+        'token' => $token,
+        'user' => $user,
+        'roles' => $roles, // Include roles in the response
+    ]);
+}
 
     // Logout User
     public function logout(Request $request)

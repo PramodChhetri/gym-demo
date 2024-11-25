@@ -20,8 +20,8 @@ class MemberController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $gym = Auth::user()->gym;
-
+        $gym = Auth::user()->gyms;
+        return response()->json($gym);
     if ($gym) {
         $members = $gym->members;
         return response()->json(['members' => $members]);

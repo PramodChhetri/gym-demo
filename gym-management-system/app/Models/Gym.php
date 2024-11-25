@@ -15,7 +15,7 @@ class Gym extends Model
 
     public function admin()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class, 'gym_admin_id');
     }
 
     public function members()

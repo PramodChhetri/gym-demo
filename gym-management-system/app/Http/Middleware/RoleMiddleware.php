@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,10 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
+        $user = User::find(Auth::id());
 
-        if (!Auth::user() || !Auth::user()->hasRole($role)) {
+
+        if (!Auth::user() || !$user()->hasRole($role)) {
             return response()->json(['error' => 'Unauthorized']);
         }
 
