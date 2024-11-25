@@ -1,9 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import ProfileImg from "../../../../assets/img/P.jpg";
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Auth } from '../../libs/auth';
-import AdminForm from "../../component/AdminForm";
+import { Auth } from '../../../libs/auth';
+import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Home,
+  PanelLeft,
+  Search,
+  Settings,
+  Users2,
+  MoreHorizontal,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 import {
   Card,
@@ -21,12 +33,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import ProfileImg from "../../../assets/img/P.jpg";
-import Image from "next/image";
-import Link from "next/link";
-import { Home, Search, Users2, MoreHorizontal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -42,84 +48,43 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 
-// Define a type for the Admin object
-interface Admin {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  status: string;
-  createdAt: string;
-}
-
-const SuperAdminDashboard: React.FC = () => {
+const GymAdminDashboard: React.FC = () => {
   const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null); // Use the Admin type for selectedAdmin
 
   useEffect(() => {
     const role = Auth.getRole();
 
-    // Uncomment this block for role-based redirection
+    // Redirect to login if the user is not a Super Admin
     // if (role !== 'Super Admin') {
     //   router.push('/login');
     // }
   }, [router]);
 
-  const admins: Admin[] = [
+  const gyms = [
     {
-      id: 1,
       name: "Pramod Chhetri",
-      email: "pramod@example.com",
-      password: "123456",
-      role: "Admin",
-      status: "Online",
+      status: "Paid",
       createdAt: "2023-07-12 10:42 AM",
     },
     {
-      id: 2,
       name: "Mahendra Adk",
-      email: "mahendra@example.com",
-      password: "654321",
-      role: "Admin",
-      status: "Online",
+      status: "Unpaid",
       createdAt: "2023-10-18 03:21 PM",
     },
     {
-      id: 3,
       name: "Krishna T",
-      email: "krishna@example.com",
-      password: "abcdef",
-      role: "Admin",
-      status: "Online",
+      status: "Active",
       createdAt: "2023-11-29 08:15 AM",
     },
   ];
-
-  const openDialogForAdd = () => {
-    setSelectedAdmin(null);
-    setIsDialogOpen(true);
-  };
-
-  const openDialogForEdit = (admin: Admin) => {
-    setSelectedAdmin(admin); // Use the Admin type here
-    setIsDialogOpen(true);
-  };
-
-  const closeDialog = () => {
-    setSelectedAdmin(null);
-    setIsDialogOpen(false);
-  };
 
   return (
     <TooltipProvider>
@@ -155,24 +120,64 @@ const SuperAdminDashboard: React.FC = () => {
               )
             )}
           </nav>
+          <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground"
+                >
+                  <Settings className="h-5 w-5" />
+                  <span className="sr-only">Settings</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Settings</TooltipContent>
+            </Tooltip>
+          </nav>
         </aside>
 
         {/* Main Content */}
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           {/* Header */}
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="icon" variant="outline" className="sm:hidden">
+                  <PanelLeft className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="sm:max-w-xs">
+                <nav className="grid gap-6 text-lg font-medium">
+                  {[{ icon: Home, label: "Dashboard" }].map(
+                    ({ icon: Icon, label }) => (
+                      <Link
+                        key={label}
+                        href="#"
+                        className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                      >
+                        <Icon className="h-5 w-5" />
+                        {label}
+                      </Link>
+                    )
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
+
             {/* Breadcrumb */}
             <Breadcrumb className="hidden md:flex">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/dashboard/super-admin/">Admin Dashboard</Link>
+                    <Link href="/dashboard/super-admin">Admin Dashboard</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link href="/dashboard/super-admin">Admins</Link>
+                    <Link href="/dashboard/super-admin/gyms">Gyms</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               </BreadcrumbList>
@@ -211,24 +216,21 @@ const SuperAdminDashboard: React.FC = () => {
             </DropdownMenu>
           </header>
 
+          <Separator className="my-2" />
+
+          {/* Dashboard Content */}
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Admins</CardTitle>
-                    <CardDescription>Manage gym admins</CardDescription>
-                  </div>
-                  <Button variant="outline" onClick={openDialogForAdd}>
-                    Add Admin
-                  </Button>
-                </div>
+                <CardTitle>Gyms</CardTitle>
+                <CardDescription>
+                  Manage gyms
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      {/* <TableHead>Image</TableHead> */}
                       <TableHead>Name</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
@@ -236,22 +238,22 @@ const SuperAdminDashboard: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {admins.map((admin) => (
-                      <TableRow key={admin.id}>
-                        {/* <TableCell>
+                    {gyms.map((product, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
                           <Image
-                            src={admin.image}
-                            alt="Admin Image"
+                            src={ProfileImg}
+                            alt="Product Image"
                             width={64}
                             height={64}
                             className="rounded-md"
                           />
-                        </TableCell> */}
-                        <TableCell>{admin.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{admin.status}</Badge>
                         </TableCell>
-                        <TableCell>{admin.createdAt}</TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{product.status}</Badge>
+                        </TableCell>
+                        <TableCell>{product.createdAt}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -260,9 +262,7 @@ const SuperAdminDashboard: React.FC = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => openDialogForEdit(admin)}>
-                                Edit
-                              </DropdownMenuItem>
+                              <DropdownMenuItem>Edit</DropdownMenuItem>
                               <DropdownMenuItem>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -274,26 +274,15 @@ const SuperAdminDashboard: React.FC = () => {
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>{admins.length}</strong> Admin(s)
+                  Showing <strong>1-3</strong> of <strong>3</strong> Gyms
                 </div>
               </CardFooter>
             </Card>
           </main>
         </div>
-
-        {/* Add/Edit Admin Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{selectedAdmin ? "Edit Admin" : "Add New Admin"}</DialogTitle>
-              <DialogClose />
-            </DialogHeader>
-            <AdminForm {...(selectedAdmin || {})} />
-          </DialogContent>
-        </Dialog>
       </div>
     </TooltipProvider>
   );
 };
 
-export default SuperAdminDashboard;
+export default GymAdminDashboard;
