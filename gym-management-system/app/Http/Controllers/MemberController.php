@@ -49,7 +49,7 @@ class MemberController extends Controller
             'email' => 'required|email|unique:members',
             'phone' => 'nullable|string|max:20',
         ]);
-
+//first check auth for admin then user connected gym then login user(gym admin) members list
         $gym = Auth::user()->gym;
 
         if ($gym) {
@@ -93,13 +93,14 @@ class MemberController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members,email,' .           $member->id,
+            'email' => 'required|email|unique:members,email,' . $member->id,
             'phone' => 'nullable|string|max:20',
         ]);
 
         $member->update($request->all());
 
-        return response()->json(['member' => $member, 'message' => 'Member updated successfully'], 200);
+        return response()->json(['member' => $member, 'message' => 'Member updated successfully']);
+        //member array in json format update it
     }
 
     /**
@@ -111,6 +112,6 @@ class MemberController extends Controller
 
         $member->delete();
 
-        return response()->json(['message' => 'Member deleted successfully'], 200);
+        return response()->json(['message' => 'Member deleted successfully']);
     }
 }

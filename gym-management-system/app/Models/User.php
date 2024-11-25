@@ -45,16 +45,17 @@ class User extends Authenticatable
     /**
      * Relationship with the Member model.
      */
-    public function member()
-    {
-        return $this->hasOne(Member::class);
-    }
+    // public function member()
+    // {
+    //     return $this->hasOne(Member::class);
+    // }
+    //
 
     /**
      * Relationship with the Gym model (for Gym Admins managing gyms).
      */
     public function gyms()
     {
-        return $this->hasMany(Gym::class, 'gym_admin_id');
+        return $this->hasOne(Gym::class, 'gym_admin_id');
     }
 }

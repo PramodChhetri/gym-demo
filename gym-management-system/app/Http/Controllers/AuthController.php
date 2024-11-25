@@ -31,29 +31,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-    // Login User
-    /*     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->planTextToken;
-
-
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'role' => $user->roles->pluck('name')->first(),
-            ]);
-        }
-
-        return response()->json(['message' => 'Invalid credentials']);
-    } */
-
     public function login(Request $request)
 {
     // Validate the input fields
